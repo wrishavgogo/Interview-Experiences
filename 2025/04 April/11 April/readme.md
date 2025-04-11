@@ -63,12 +63,20 @@ So the interviewer asked me to explain the code , gave a few test cases and aske
   N^2 , 
   ( 10^6 * 10 ^6 ) * 100 Bytes , that about peta bytes 
 
+  
+
 
   Things that i have to learn .
 
   1. I have to learn about aeroSpike db , how it is a NOsql and support very fast operations due to SSDs
   2. PostGreSql , how it supports ACID properties  , different isolation properties
-       Read_Committed , Read_Uncommitted, etc etc 
+       Read_Committed , Read_Uncommitted, etc etc
+
+
+One more thing i got to know abt PhonePe , 
+they have started blinkit like services , they are delivering grocery item , but assigning delivery partners part they have outsourced it to 
+ShadowFax 
+ShadowFax is a company like porter , parcel service 
 
 
 
