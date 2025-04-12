@@ -80,6 +80,19 @@ ShadowFax is a company like porter , parcel service
 
 
 
+One more Learning :- 
+
+When he asked me what database you would use and how you would use , it 
+Always start with schema ,decide on the schema , Dont jump ahead with the with choices like no sql or sql 
+
+After agreeing on schema , go on the ask the query pattern and the transactions per second ,
+
+Then after deciding on the choice of DB , see the size of data and decide on partition strategies and storage 
+
+This is how you should go 
+
+
+
 
 
 
