@@ -1,0 +1,8 @@
+Round 1 question1 : https://leetcode.com/problems/cousins-in-binary-tree-ii/description/  , was able to code the solution 
+Round1 question2 : https://leetcode.com/problems/wiggle-subsequence/description/ , interviewer helped and we both got to a solution 
+But the thing i learnt from this round is that ,  I have to agree with the interviewer and not disagree and force my thought process , i have to see what the interviewer is looking 
+for and then accordingly work with them . 
+
+
+My interviewer was a lady from ex-Meta , initially after giving the interview I was overwhelmed , but then i realised that , everyone is person at the end . 
+The interviewer was very humble and told me to wait . 
