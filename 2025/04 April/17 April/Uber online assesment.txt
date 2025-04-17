@@ -1,0 +1,9 @@
+In the Uber online assessment link , 
+i got the problem 
+
+where given a string s = "absbabsbabsbssac" , t = "abs" 
+
+check how many substrings of s , match with that of t , 
+
+this algorigthm i learnt in O(n + m ) solution , but i forgot , it was very embarrssing , 
+i had to implement O(n*m) solution , which was embarrsing , i have to learn the better soln 
