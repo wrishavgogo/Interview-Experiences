@@ -8,6 +8,9 @@ for DSA round :-
 
 solve the question with zero to minimal guidance 
 dont voluntarily add complexity be clear with the requirements 
+Trade off and analysis for the solutions 
 
 
 200 - 300 Problems ,  solve minimum to be ready 
+
+
