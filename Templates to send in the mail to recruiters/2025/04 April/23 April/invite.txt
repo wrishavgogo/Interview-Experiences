@@ -1,0 +1,15 @@
+Hi Harjas , 
+
+Sending this email displaying my interest in the opportunity for a SDE 2 role , Currently am a software developer 3 at Walmart Global India Tech , 
+and my skill set and tech stack completely align with the ones posted by you . techstacks like Java, Spring Boot, Hibernate/JPA, MySQL, Messaging Queues 
+(Kafka, SQS, RabbitMQ), RESTful APIs.
+
+A little background about me and currently how I am leveraging the following technologies . 
+Currently leading backend development at Walmart to improve inventory health and fulfillment efficiency. Built an Inventory Scoring System to drive smarter sourcing,
+optimized packaging algorithms to reduce costs, and partnered with data teams to enable simulation-driven decision-making. 
+Driving impactful changes in large-scale retail logistics through system design, collaboration, and data-driven engineering
+
+Sharing my CV for your reference 
+
+Thanks,
+Wrishav
