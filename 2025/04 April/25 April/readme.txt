@@ -118,6 +118,12 @@ Learning 5 : He asked me to write Singleton Class , but i wrote it wrong
 
   take no interview lightly ever again 
 
+
+Behevariol interview questions he asked :- 
+
+1. what was the last feedback your manager gave you ? 
+2. tell me about an incident where you left a code better than you found it . Basically refactored it .
+
   
 
 
