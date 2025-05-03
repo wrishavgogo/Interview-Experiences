@@ -1,0 +1,49 @@
+Today was Naggaro interview experience 
+
+I did a bizzare mistake , i only focussed on solving assessment 
+my mind was speaking very loud during that time , and i was not focusing on what was in front of me.
+What ended up happening is i only ended up attempting the DSA section and missed out on the MCQ part
+I think next time whenever i go into overthinking i will remember this incident and will bounce back into present as soon as possible 
+
+
+
+
+But the DSA questions where good , I will note down however much i remember 
+
+Q1) -> 
+
+it had to do with something related to permutation and combination 
+you will be given k1 -> h
+you will be given k2 -> t
+you have to respond with the possible permutations for this ,---> I remembered the formula (k1 + k2)!/k1!*k2!
+
+Q2) -> you have to split the array in such a way so that each segment has equal number of elements 
+		and are in the same order
+
+test case 1
+[1,1,1,2,2,2,3,3,3]  -> [1 , 2 , 3 ] ,  [ 1 , 2 , 3] , [ 1 , 2 , 3]
+ans = 3 , so len / minFreq of elements
+1 -> 3
+2 -> 3
+3 -> 3
+
+test case 2
+[1 , 2 , 3 , 4 , 5] -> [ 1 , 2 , 3 , 4 , 5] -> you cannot split this anymore 
+ans = 1
+
+
+Q3) This was kind of a dp problem 
+given a number in string format = 125 
+
+you can place any number of '+' in b/w the digits , you have to find out total sum you can get by placing '+' 's in b/w
+
+125 
+1+25 
+12+5
+1+2+5 
+
+add all these into your answer and that will be your answer 
+I tried backtracking to solve it , but was unable to solve many cases for it 
+Because the number can be large -> String format 
+
+So have to try thinking in terms of String format 
