@@ -1,0 +1,185 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+import javax.swing.text.Position;
+
+import weka.filters.unsupervised.attribute.InterquartileRange;
+
+// str1: "bat"
+// str2: "bjkart" --> true
+
+// str1: "bta"
+// str2: "bjkart" --> false
+
+/**
+    prev = 2
+    b -> 0 , 1 , 6 
+    c -> 4 , 7 , 8
+*/
+/*
+[10,10,11,11,12,13,13] 11 ,first position = 2
+[10,10,11,11,12,13,13] 13 ,first position = 5
+-1 if not present
+*/
+public class Solution {
+
+    static int addNumbers(int a, int b) {
+        return a+b; 
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int a;
+        a = in.nextInt();
+        int b;
+        b = in.nextInt();
+        int sum;
+        
+        // String str1 = "ba";
+        // String str2 = "abbbb"; 
+        
+        // Map<Character  , Stack<Integer>> charToPositionListMap = new HashMap<>();
+        // int n = str2.length();
+        // for(int i = n - 1 ; i >= 0  ; i -- ) {
+        //     char c = str2.charAt(i);
+        //     charToPositionListMap.computeIfAbsent( c , (Character key ) -> new Stack<Integer>());
+        //     charToPositionListMap.get(c).push(i);
+        // }
+        
+        // boolean ans = true;
+        
+        // int m = str1.length();
+        // int prev = -1;
+        
+        // for(int i = 0  ; i <  m ; i ++ ) {
+            
+        //     char c = str1.charAt(i);
+            
+        //     if(!charToPositionListMap.containsKey(c)) {
+        //         ans = false;
+        //         break;
+        //     }
+            
+
+        //     while(!charToPositionListMap.get(c).isEmpty() && charToPositionListMap.get(c).peek() <= prev ) {
+        //         charToPositionListMap.get(c).pop();
+        //     }
+            
+        //     if(charToPositionListMap.get(c).isEmpty()) {
+        //         charToPositionListMap.remove(c);
+        //         ans = false;
+        //         break;
+        //     }
+            
+        //     prev = charToPositionListMap.get(c).pop();
+        // }
+        
+        List<Integer> arr = new ArrayList<>();
+        int target = 20;
+        
+        arr.add(10);
+        arr.add(10);
+        arr.add(10);
+        arr.add(11);
+        arr.add(18);
+        arr.add(18);
+        arr.add(20);
+        
+        int ans = positionInArray(arr , target );
+
+        sum = addNumbers(a, b);
+        System.out.println(ans);
+    }
+    
+    private static int positionInArray(List<Integer> arr , int target ) {
+        
+        int n = arr.size();
+        
+        if(n == 0 ) {
+            return -1;
+        }
+        
+        int lo = 0;
+        int hi = n - 1;
+        int position = -1;
+        
+        while(lo <= hi ) {
+            
+            int mid = (lo + hi) / 2;
+            
+            if(arr.get(mid) >= target) {
+                
+                hi = mid - 1;
+                
+                if(arr.get(mid) == target) {
+                    position = mid;
+                }
+            } else {
+                lo = mid + 1;
+            }
+        }
+        
+        return position;
+    }
+    
+    
+    private static int greatestValidSubstring(String s ) {
+        
+        int n = s.length();
+        
+        int ans = 0;
+        
+        int i = 0;
+        int j = 0;
+        
+        Map<Character , Integer > charToFreqMap = new HashMap<>();
+        
+        while(i < n && j < n ) {
+            
+            /***
+                ab
+                
+                a -> 1
+                b -> 1 
+                j = 1
+                i = 0
+                
+                len = 2
+                
+                
+                ans = 2
+                
+            **/
+            
+            char c = s.charAt(j);
+            charToFreqMap.put(c , charToFreqMap.getOrDefault(c, 0) + 1);
+            
+            
+            while((j - i + 1) > charToFreqMap.size()) {
+                c = s.charAt(i);
+                charToFreqMap.put(c , charToFreqMap.getOrDefault(c, 1) - 1);
+                if(charToFreqMap.getOrDefault(c , 0) == 0 ) {
+                    charToFreqMap.remove(c);
+                }
+                i++;
+            }
+            
+            ans = Math.max(ans , j - i + 1 );
+            j++;
+            
+            
+        }
+        
+        return ans;
+    }
+    
+    // str1 = "abcdefgf" --> 7
+    // str1 = "aaabbc" --> 2
+    
+    
+    
+    
+}
