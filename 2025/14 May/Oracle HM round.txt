@@ -9,3 +9,10 @@ Most impactful work talk about preferred Day feature ,
 
 
 Oracle Health Migrating from Old Legacy to new Oracle EHR -> want to explore this 
+
+
+
+I did not have full proof answer to the question : 
+
+Did your code ever cause any incident and how did you handle it ? was it a quick turn around 
+I told them about the sfs node level reservation scenario where sfs went from dfs 
