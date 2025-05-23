@@ -1,0 +1,9 @@
+Ideal Weekly Schedule (DSA + LLD + HLD in 7 Days)
+Day	Focus Area	Suggested Topics
+Mon	DSA (Medium-Hard)	Subarrays, Greedy, Prefix, Hashing, MEX-type logic
+Tue	LLD (Low-Level Design)	OOP, class diagrams, design patterns, solid principles
+Wed	DSA (Conceptual/Hard)	Tree, Graphs, DP, Brute→Optimal transitions
+Thu	HLD (High-Level Design)	Scalable systems, caching, DB, load balancing, API design
+Fri	DSA Contest Upsolve	Take an old CF/AtCoder contest, solve + analyze
+Sat	LLD + Side Project	Apply LLD to a mini backend project, design system flows
+Sun	Light Day / Review	Revise mistakes, read blogs/editorials, chill learning
