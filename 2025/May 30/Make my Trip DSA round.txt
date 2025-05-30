@@ -1,0 +1,126 @@
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+
+// Given a dictionary, and a M x N board where every cell has one character. Find all possible words that can be formed by a sequence of adjacent characters. Note that we can move to any of 8 adjacent characters, but a word should not have multiple instances of the same cell.
+ 
+// Input: dictionary[] = {"GEEKS", "FOR", "QUIZ", "GO"};
+//       board[][]   = { {'G', 'I', 'Z'},
+//                       {'U', 'E', 'K'},
+//                       {'Q', 'S', 'E'}};
+/**
+    G - > {}.  p      
+    E -> { } , {}  q 
+    K -> {}  r 
+    S -> {}  s 
+*/
+
+// dictionary.length = d
+// 
+// O(d * m*n*w )
+// m*n^2 
+ 
+// Output: Following words of the dictionary are present
+//          GEEKS
+//          QUIZ
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) {
+        
+      String dictionary[] = {"GEEKS", "FOR", "SEEK", "GO"};
+      char board[][]   = { {'G', 'E', 'F'},
+                      {'E', 'E', 'K'},
+                      {'G', 'S', 'E'}};
+                      
+     Map<Character , List<String>> charToPositionList = new HashMap<>();
+     List<String> ans = new ArrayList<>();
+     int n = board.length;
+     int m = board[0].length;
+     
+     
+     for(int i = 0 ; i < n ; i ++ ) {
+         for(int j = 0 ; j < m ; j ++ ) {
+             
+             char c = board[i][j];
+             charToPositionList.computeIfAbsent(c , (Character k) -> new ArrayList<>());
+             String position = String.valueOf(i) + "~" + String.valueOf(j);
+             charToPositionList.get(c).add(position);
+         }
+     }
+     // O(n*m)
+     
+     
+     for(int i = 0 ; i < dictionary.length ; i ++ ) {
+         
+         // O (d)
+         // O(l*)
+         Set<String> visited = new HashSet<>();
+         if(dfs(charToPositionList , visited ,  dictionary[i] , 0 , "#")) {
+             ans.add(dictionary[i]);
+         }
+         
+         System.out.println("end of word" + " ," + dictionary[i]);
+     }
+     
+     for(int i = 0 ; i < ans.size() ; i ++ ) {
+         System.out.println(ans.get(i));
+     }
+     
+     
+        
+    }
+    
+    static boolean   dfs(Map<Character , List<String>> charToPositionList , Set<String> visited , String word , int index , String prevPosition) {
+        
+        
+        if(index >= word.length()) {
+            return true;
+        }
+        
+        List<String> positionList = charToPositionList.get(word.charAt(index));
+        if(positionList == null ) {
+            return false;
+        }
+        //System.out.println(word.charAt(index));
+        
+        boolean ans = false;
+        for(int i = 0 ; i < positionList.size() ; i ++ ) {
+            
+            System.out.println(positionList.get(i));
+            if(prevPosition == "#") {
+                visited.add(positionList.get(i));
+                ans = ans | dfs(charToPositionList , visited , word , index + 1 ,  positionList.get(i));
+                visited.remove(positionList.get(i));
+            } else {
+                
+                if(isAdjacent(prevPosition , positionList.get(i) ) && !visited.contains(positionList.get(i))) {
+                    visited.add(positionList.get(i));
+                    ans = ans | dfs(charToPositionList , visited , word , index + 1 ,  positionList.get(i));
+                    visited.remove(positionList.get(i));
+                }
+            }
+        }
+        
+        
+        return ans;
+        
+    }
+    
+    static boolean  isAdjacent(String pos1 , String pos2) {
+        
+        String[] split1 = pos1.split("~");
+        String[] split2 = pos2.split("~");
+        
+        int x1 = Integer.parseInt(split1[0]);
+        int y1 = Integer.parseInt(split1[1]);
+        
+        int x2 = Integer.parseInt(split2[0]);
+        int y2 = Integer.parseInt(split2[1]);
+        
+        if(Math.abs(x1 - x2) > 1 || Math.abs(y1 - y2 ) > 1 ) {
+            return false;
+        }
+        
+        return true;
+    }
+}
