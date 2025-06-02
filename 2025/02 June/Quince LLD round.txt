@@ -1,0 +1,251 @@
+Parking lot , 
+I did not have much confidence but i did it somehow 
+
+
+package Date_2025_06_02;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+
+import java.util.*;
+
+public class Solution {
+
+    /***
+    *
+    * BASIC REQUIREMENTS
+     * 10K , 50K SPOTS
+     * MULTIPLE ENTRANCES AND EXITS
+     * TICKET -> AT THE ENTRY (DETAILS WHERE WE SHOULD PARK)
+     * WHILE EXITING MAKE A PAYMENT
+     *
+     * ASSUMPTIONS
+     * 1. SINGLE FLOOR
+     * 2. 3 TYPES , OF PARKING SPOTS , 2 , 4 , AND DISABLED PARKING
+     * 3. CAN EXIT FROM ANYWHERE
+     *
+     *
+     *
+     * ENTITIES
+     *
+     * 1. SPOT
+     * 2. VEHICLE TYPE
+     * 3. GATE -> (ENTRY , EXIT )
+     *
+     *
+     * MANAGERS
+     * 1. PARKINGSTRAGEY -> NEARESTSPOT
+     * 2 . PAYMENT -> VARIOUS METHOD PAY ( STRATEGY )
+     * 4.  APPLICATION -> SINGLETON
+     *
+    **/
+
+
+
+
+
+}
+
+class  Spot {
+
+    boolean isAvailable;
+    String id;
+
+    public Spot(boolean isAvailable , String id ) {
+
+        this.isAvailable = isAvailable;
+        this.id = id;
+    }
+}
+// multiple implementation sof parking spot only wrote one here
+class TwoWheelerParkingSpot extends Spot {
+
+    public TwoWheelerParkingSpot(boolean isAvailable , String id ) {
+        super(isAvailable , id);
+    }
+}
+
+class SpotFactory {
+
+    static Random random = new Random();
+
+    public static Spot getSpot(String type) {
+
+        switch (type) {
+            case "2-wheeler" -> {
+                return new TwoWheelerParkingSpot(true , String.valueOf(random.nextInt()));
+            }
+            // for other types we will have similar implementation based on the parking spot type
+            default -> {
+                return null;
+            }
+
+        }
+    }
+}
+
+enum GateType {
+    ENTRY,
+    EXIT
+}
+
+class Gate {
+    String id;
+    GateType gateType;
+
+    public Gate(String id , GateType gateType) {
+        this.id = id;
+        this.gateType = gateType;
+    }
+}
+
+// singleton parkingspOT MANAGER
+// handling ticket assigment
+// using the tickeHandlers
+class ParkingSpotManager {
+
+    Map<String , Spot > idToSpotMap;
+    List<Ticket> ticketList;
+    TicketHandler entryTicketHandler;
+    TicketHandler exitTickHandler;
+    List<Gate> gateList;
+    int capacity;
+    static ParkingSpotManager parkingSpotManager;
+
+
+    private ParkingSpotManager() {
+        idToSpotMap = new HashMap<>();
+        gateList = new ArrayList<>();
+    }
+
+    static ParkingSpotManager getInstance() {
+
+        if(parkingSpotManager == null ) {
+            parkingSpotManager = new ParkingSpotManager();
+        }
+
+        return parkingSpotManager;
+    }
+
+
+}
+
+
+
+class Ticket {
+    String id;
+    String userId;
+    Spot spotId;
+    long startTime;
+    long endTime;
+    String entryGateId;
+    String exitGateId;
+    double fare;
+}
+
+interface TicketHandler {
+
+
+    public void enrichTicket(Ticket ticket);
+
+    public Ticket processTicket(String spotId);
+
+}
+
+// details required for handling payment only
+class PaymentMetadata {
+
+    String spotType;
+
+}
+
+
+
+
+class ExitTicketHandler implements TicketHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(ExitTicketHandler.class);
+    PaymentServiceFactory paymentServiceFactory = new PaymentServiceFactory();
+
+    public void enrichTicket(Ticket ticket) {
+        ticket.endTime = System.nanoTime();
+        // impl
+    }
+
+    public Ticket processTicket(String spotId) {
+        // SOME IMPL
+        // here we will pass PaymentMetadata instead of ticket
+        // to remove the error
+        Ticket ticket = new Ticket();
+        double fare = paymentServiceFactory.getPaymentService("UPI").evaluateFare(ticket);
+        // populate the fare in the ticket
+        return new Ticket();
+    }
+
+
+}
+
+class EntryTicketHandler implements TicketHandler {
+
+    public void enrichTicket(Ticket ticket) {
+        ticket.startTime = System.nanoTime();
+        // impl
+    }
+
+    public Ticket processTicket(String spotId) {
+        Ticket ticket = new Ticket();
+        return ticket;
+    }
+
+
+}
+
+
+
+interface PaymentServiceStrategy  {
+
+    public double evaluateFare(Ticket ticket ) ;
+}
+
+class PaymentServiceFactory {
+
+
+    PaymentServiceStrategy paymentServiceStrategy;
+
+    public static PaymentServiceStrategy getPaymentService(String paymentMode) {
+
+        switch (paymentMode)  {
+
+            case "UPI" -> {
+                return new UpiPaymentService();
+            }
+            case "CARD" -> {
+                return new CardPaymentService();
+            }
+            default -> {
+                return new CardPaymentService();
+            }
+        }
+    }
+
+}
+
+class UpiPaymentService implements  PaymentServiceStrategy {
+    // here we will pass PaymentMetadata instead of ticket
+    public double evaluateFare(Ticket ticket ) {
+        // some implmentation
+        return 10.0;
+    }
+}
+
+class CardPaymentService implements  PaymentServiceStrategy {
+    // here we will pass PaymentMetadata instead of ticket
+    public double evaluateFare(Ticket ticket ) {
+        // some implmentation
+        return 10.0;
+    }
+}
+
+
+
