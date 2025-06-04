@@ -1,0 +1,327 @@
+I think this is All O(1) data structure question 
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.*;
+
+/**
+    STREAM of contentid -> action to be performed on them 
+    content can be videos , post , 
+    action -> { increase popularity , decrease popularity } 
+    
+    content Id -> positive integers 
+    
+    at any instant return
+    
+    interface MostPopular {
+    void increasePopularity(Integer contentId);
+    Integer mostPopular();
+    void decreasePopularity(Integer contentId);
+}
+Sample execution: 
+[
+  popularityTracker.increasePopularity(7);
+  popularityTracker.increasePopularity(7);
+  popularityTracker.increasePopularity(8);
+  popularityTracker.mostPopular();        // returns 7
+  popularityTracker.increasePopularity(8);
+  popularityTracker.increasePopularity(8);
+  popularityTracker.mostPopular();        // returns 8
+  popularityTracker.decreasePopularity(8);
+  popularityTracker.decreasePopularity(8);
+  popularityTracker.mostPopular();        // returns 7
+  popularityTracker.decreasePopularity(7);
+  popularityTracker.decreasePopularity(7);
+  popularityTracker.decreasePopularity(8);
+  popularityTracker.mostPopular();        // returns -1 since there is no content with popularity greater than 0
+]
+
+Sample execution: 
+[
+  popularityTracker.increasePopularity(7);
+  popularityTracker.increasePopularity(8);
+  popularityTracker.mostPopular();        // returns 8
+  popularityTracker.increasePopularity(8);
+  popularityTracker.increasePopularity(7);
+  popularityTracker.mostPopular();        // returns 7
+  popularityTracker.decreasePopularity(8);
+  popularityTracker.decreasePopularity(7);
+  popularityTracker.mostPopular();        // returns 7, since 7 has highest popularity and was most recently observed
+]
+**/
+
+interface MostPopular {
+    void increasePopularity(Integer contentId);
+    Integer mostPopular();
+    void decreasePopularity(Integer contentId);
+}
+
+
+
+
+class PopularityTracker implements MostPopular {
+    
+    Map<Integer , Integer> contentToFrequencyMap;
+    Map<Integer , Set<Integer>> frequencyToContentSetMap;
+    int maxFrequency;
+    
+    public PopularityTracker() {
+        contentToFrequencyMap = new HashMap<>();
+        frequencyToContentSetMap = new HashMap<>();
+        maxFrequency = 0;
+    }
+    
+    @Override
+    public void increasePopularity(Integer contentId) {
+        
+        contentToFrequencyMap.put(contentId , contentToFrequencyMap.getOrDefault(contentId, 0) + 1);
+        int newFrequency = contentToFrequencyMap.get(contentId);
+        maxFrequency = Math.max(maxFrequency , newFrequency);
+        
+        
+        frequencyToContentSetMap.computeIfAbsent(newFrequency, (Integer key) -> new HashSet<>());
+        frequencyToContentSetMap.get(newFrequency).add(contentId);
+        
+    }
+    
+    @Override
+    public Integer mostPopular() {
+        
+        if(maxFrequency == 0 ) {
+            return -1;
+        }
+        
+        Set<Integer> st = frequencyToContentSetMap.get(maxFrequency);
+        Iterator it = st.iterator();
+        
+        int popularContent = (int) (it.next());
+        return popularContent;
+    }
+    
+    
+    @Override
+    public void decreasePopularity(Integer contentId) {
+        
+        
+        int oldFrequency = contentToFrequencyMap.get(contentId);
+        contentToFrequencyMap.put(contentId , oldFrequency - 1);
+        int newFrequency = contentToFrequencyMap.get(contentId);
+        
+        frequencyToContentSetMap.get(oldFrequency).remove(contentId);
+
+        if(frequencyToContentSetMap.get(oldFrequency).size() == 0) {
+            frequencyToContentSetMap.remove(oldFrequency);
+        }
+        
+        if(contentToFrequencyMap.get(contentId) == 0 ) {
+            contentToFrequencyMap.remove(contentId);
+        }
+        
+        
+        
+        frequencyToContentSetMap.computeIfAbsent(newFrequency, (Integer key) -> new HashSet<>());
+        frequencyToContentSetMap.get(newFrequency).add(contentId);
+        
+        if(!frequencyToContentSetMap.containsKey(maxFrequency)) {
+            maxFrequency--;
+        }
+        
+        
+    }
+    
+}
+
+
+class MostRecent { 
+    
+    class Node {
+        
+        int val;
+        Node prev;
+        Node next;
+        
+        public Node(int val) {
+            
+            this.val = val;
+        }
+         
+    }
+    
+    
+    Map<Integer , Node > contentToNodeMap;
+    Node head;
+    Node tail;
+    
+    
+    public MostRecent() {
+        contentToNodeMap = new HashMap<>();
+        head = new Node(-1);
+        tail = new Node(-1);
+        head.next = tail;
+        tail.prev = head;
+        
+    }
+    
+    public void add(int content) {
+        
+        Node newNode = new Node(content);
+        
+        if(contentToNodeMap.containsKey(content)) {
+            remove(content);
+        }
+        contentToNodeMap.put(content , newNode);
+        
+        Node previousNode = tail.prev;
+        previousNode.next = newNode;
+        tail.prev = newNode;
+        
+        newNode.next = tail;
+        newNode.prev = previousNode;
+    }
+    
+    
+    public void remove(int content) {
+        
+        Node node = contentToNodeMap.get(content);
+        
+        if(node == null ) {
+            return ;
+        }
+        
+        
+        Node previousNode = node.prev;
+        Node nextNode = node.next;
+        
+        previousNode.next = nextNode;
+        nextNode.prev = previousNode;
+        
+        contentToNodeMap.remove(content);
+    }
+    
+    public int getMostRecent() {
+        
+        if(head == tail ) {
+            return -1;
+        }
+        
+        return tail.prev.val;
+    }
+    
+    public boolean isEmpty() {
+        
+        return head.next == tail;
+    }
+    
+}
+
+
+class PopularityTracker1 implements MostPopular {
+    
+    Map<Integer , Integer> contentToFrequencyMap;
+    Map<Integer , MostRecent> frequencyToContentSetMap;
+    int maxFrequency;
+    
+    public PopularityTracker1() {
+        contentToFrequencyMap = new HashMap<>();
+        frequencyToContentSetMap = new HashMap<>();
+        maxFrequency = 0;
+    }
+    
+    @Override
+    public void increasePopularity(Integer contentId) {
+        
+        contentToFrequencyMap.put(contentId , contentToFrequencyMap.getOrDefault(contentId, 0) + 1);
+        int newFrequency = contentToFrequencyMap.get(contentId);
+        maxFrequency = Math.max(maxFrequency , newFrequency);
+        
+        
+        frequencyToContentSetMap.computeIfAbsent(newFrequency, (Integer key) -> new MostRecent());
+        frequencyToContentSetMap.get(newFrequency).add(contentId);
+        
+    }
+    
+    @Override
+    public Integer mostPopular() {
+        
+        if(maxFrequency == 0 ) {
+            return -1;
+        }
+        
+        MostRecent st = frequencyToContentSetMap.get(maxFrequency);
+        
+        
+        int popularContent = st.getMostRecent();
+        return popularContent;
+    }
+    
+    
+    @Override
+    public void decreasePopularity(Integer contentId) {
+        
+        
+        int oldFrequency = contentToFrequencyMap.get(contentId);
+        contentToFrequencyMap.put(contentId , oldFrequency - 1);
+        int newFrequency = contentToFrequencyMap.get(contentId);
+        
+        frequencyToContentSetMap.get(oldFrequency).remove(contentId);
+
+        if(frequencyToContentSetMap.get(oldFrequency).isEmpty()) {
+            frequencyToContentSetMap.remove(oldFrequency);
+        }
+        
+        if(contentToFrequencyMap.get(contentId) == 0 ) {
+            contentToFrequencyMap.remove(contentId);
+        }
+        
+        
+        
+        frequencyToContentSetMap.computeIfAbsent(newFrequency, (Integer key) -> new MostRecent());
+        frequencyToContentSetMap.get(newFrequency).add(contentId);
+        
+        if(!frequencyToContentSetMap.containsKey(maxFrequency)) {
+            maxFrequency--;
+        }
+        
+        
+    }
+    
+}
+
+public class Solution {
+
+   public static void main(String[] args) {
+    
+        PopularityTracker1 popularityTracker = new PopularityTracker1();
+        
+            // System.out.println(popularityTracker.mostPopular()); 
+            // popularityTracker.increasePopularity(7);
+            // popularityTracker.increasePopularity(7);
+            // popularityTracker.increasePopularity(8);
+            // popularityTracker.increasePopularity(8);
+            // System.out.println(popularityTracker.mostPopular());        // 8
+            // popularityTracker.increasePopularity(6);
+            // System.out.println(popularityTracker.mostPopular());        // returns  8
+            // popularityTracker.decreasePopularity(7);
+            // popularityTracker.decreasePopularity(7);
+            // popularityTracker.decreasePopularity(8);
+            // popularityTracker.decreasePopularity(8);
+            // System.out.println(popularityTracker.mostPopular());          // returns 6
+            // popularityTracker.decreasePopularity(6);
+            // System.out.println(popularityTracker.mostPopular());         // returns -1 since there is no content with popularity greater than 0
+            
+            
+        popularityTracker.increasePopularity(7);
+        popularityTracker.increasePopularity(8);
+        System.out.println(popularityTracker.mostPopular());        // returns 8
+        popularityTracker.increasePopularity(8);
+        popularityTracker.increasePopularity(7);
+        System.out.println(popularityTracker.mostPopular());        // returns 7
+        popularityTracker.decreasePopularity(8);
+        popularityTracker.decreasePopularity(7);
+        System.out.println(popularityTracker.mostPopular());        // returns 7, since 7 has highest popularity and was most recently observed
+        
+   }
+}
