@@ -1,6 +1,8 @@
 Designing a word guessing game to design 
 
 
+https://rahul-say100.netlify.app/ -> this game was asked to design where i can win 
+
 1 - 10 
 
 x -> x + 1 , x + 10  ==> y 
