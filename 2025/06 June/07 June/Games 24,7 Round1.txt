@@ -1,0 +1,147 @@
+Designing a word guessing game to design 
+
+
+1 - 10 
+
+x -> x + 1 , x + 10  ==> y 
+
+y -> y + 1 , y + 10 
+
+
+
+x + 1 <= 100 <= x + 10 --> odd round 
+
+
+
+x -> max -> 99 
+       min -> 90 
+
+turn = 1 
+1 , 2 , 3 , ..... , 10 
+
+  -> turn = 2 ( x + 1 , x + 2 , ..... , x +10 ) 
+  -> turn  = 1 
+
+
+x  + 1 = 89  ( 88 ) 
+x + 10 = 89 ( 79 ) 
+
+
+90 (computer )  -> ( 1 ,, 10 )  then my turn 
+
+89 ( after i played )  -> xcomp + 1 , xcomp + 10 
+
+89  ,  ( 79  , 88 ) 
+
+78 ( after i played )  ->  x computer ( 77 , 68 ) 
+
+67 ( after i played )  -> ( 66 , 57 ) 
+
+
+56  (after i played ) -> ( 55 , 46 ) 
+
+45 ( after i played ) -> ( 44 , 35 ) 
+
+34 ( after i played ) -> ( 33 , 24 ) 
+
+23 ( after i played) -> ( 22 , 13 ) 
+
+12 ( after i payed ) -> ( 11 , 2 ) 
+
+1
+
+
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import 
+
+class Main {
+    public static void main(String[] args) {
+       
+       
+       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+       
+     int val = 0;
+       int turn = 0;
+       int upperlimit = 10;
+       
+       TreeSet<Integer> winPositions = new TreeSet<>();
+       
+       winPositions.add(12);
+       winPositions.add(23);
+       winPositions.add(34);
+       winPositions.add(45);
+       winPositions.add(56);
+       winPositions.add(67);
+       winPositions.add(78);
+       winPositions.add(89);
+       winPositions.add(100);
+       
+       Random random = new Random();
+       
+       while(val != 100 ) {
+           
+           if(val == 0 ) {
+               System.out.println("start the game");
+               
+           } else {
+               System.out.println("current value is " + val);
+           }
+           
+           if(turn == 0 ) {
+               
+               int input = Integer.parseInt(br.readLine());
+               val = input;
+               
+               turn = 1;
+               
+           } else {
+               
+               
+               int prevVal = val;
+               
+               int nextWinPosition = winPositions.higher(val);
+               
+               if(nextWinPosition - val <= upperlimit 
+               && nextWinPosition - val > 0   ) {
+                   
+                   val = nextWinPosition;
+               } else {
+                   
+                   val = random.nextInt(val + 1 , val + 11 );
+               }
+               
+               turn = 0;
+               
+               
+               
+               
+           }
+           
+       }
+       
+       if(turn == 0 ) {
+           System.out.println("you win");
+       } else {
+           
+           System.out.println("you lose");
+       }
+    }
+}
+
+
+Few Designing questions :- 
+
+
+Cassandra how compaction works , which SSTables are decided to be compacted -> need to learn this 
+Ring structure ->  how does cassandra know where the reads went , and to which node 
+
+
+For Kafka , 
+why partitioning is required why cant we have one partition key 
+
+
