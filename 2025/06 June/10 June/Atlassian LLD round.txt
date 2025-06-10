@@ -1,0 +1,271 @@
+package Date_2025_06_09;
+
+
+
+//Imagine you’re working on payments team at Atlassian. A customer subscribes to Jira and is interested in exploring how much it’ll cost them to keep using the product for the rest of the year.
+//Your task is to develop a CostExplorer that calculates the total cost a customer has to pay in a unit year. This means that at any day of the year they should be able to get a provisional report giving monthly/yearly cost estimates.
+//Cost Explorer should be able to provide a report of -
+//Monthly cost (Generate a bill for each month, including bill amount for future months for the unit year)
+//Yearly cost estimates (for the unit year)
+//CostExplorer ->
+//
+//monthlyCostList(): Array/List of size 12 filled with cost incurred in each month of the unit year
+//
+//annualCost(): Total cost in a unit year
+
+
+/**
+ *
+ * multiple plans for a product ,
+ *
+ * keep plans same for all products
+ *
+ * products -> can have these plans
+ *
+ *
+ *
+ * [  monthly cost of each plan
+ *
+ *   {BASIC, 9.99},
+ *
+ *   {STANDARD, 49.99},
+ *
+ *   {PREMIUM, 249.99}
+ *
+ * ]
+ *
+ *
+ * product List -> { input from other team , for the products }
+ *
+ *
+ *
+ * Format for the input
+ *
+ * Customer -> C1
+ * Product ->
+ * 	Name -> Jira
+ * 	Subscription -> [ BASIC, "2022-03-10”  ] //  { planId, startDate }, date in YYYY-MM-DD format
+ *
+ *
+ * 	Customer -> C1
+ *  * Product ->
+ *  * 	Name -> JiraASN
+ *  * 	Subscription -> [ BASIC, "2022-01-03”  ] //  { planId, startDate }, date in YYYY-MM-DD format
+ * **/
+
+
+import org.springframework.objenesis.instantiator.basic.NewInstanceInstantiator;
+
+import java.util.*;
+
+/**
+ *
+ * plan -> strategy ( factory)
+ * CostExplorerController -> singleton
+ *
+ * { planId, startDate } -> Subscription
+ *
+ * Map<CustomerId , List<Subscription>>
+ *
+ *
+ *
+ * **/
+
+
+public class CodeSolution {
+
+    public static void main(String[] args) {
+
+        CostExplorer costExplorer = CostExplorer.getInstance();
+
+        costExplorer.addSubscription("Jira" , "BASIC" ,  "2022-06-10");
+        costExplorer.addSubscription("JiraASN" , "STANDARD" ,  "2022-01-03");
+        System.out.println(costExplorer.annualCost());
+        List<Double> costList = costExplorer.monthlyCostList();
+        for(int i = 0 ; i < costList.size() ; i ++ ) {
+            System.out.println(costList.get(i));
+        }
+    }
+}
+
+
+
+
+interface CostPlanStrategy {
+
+    public double getPrice();
+}
+
+class BasicCostPlanStrategy implements  CostPlanStrategy {
+
+    public double getPrice() {
+        return 9.99;
+    }
+}
+
+class StandardCostPlanStrategy implements  CostPlanStrategy {
+
+    public double getPrice() {
+        return 49.99;
+    }
+}
+
+class PremiumCostPlanStrategy implements  CostPlanStrategy {
+
+    public double getPrice() {
+        return 249.99;
+    }
+}
+
+enum PlanType {
+    BASIC,
+    STANDARD,
+    PREMIUM
+}
+
+class CostPlanStrategyFactory {
+
+    public static CostPlanStrategy getCostPlan(PlanType planType) {
+
+        switch (planType) {
+
+            case BASIC -> {
+                return  new BasicCostPlanStrategy();
+            }
+            case STANDARD -> {
+                return  new StandardCostPlanStrategy();
+            }
+            case PREMIUM -> {
+                return new PremiumCostPlanStrategy();
+            }
+            default -> {
+                return new BasicCostPlanStrategy();
+            }
+        }
+    }
+}
+
+
+class Subscription {
+
+    String id;
+    CostPlanStrategy costPlanStrategy;
+    String startDate;
+    String productId;
+
+
+    public Subscription(String id , CostPlanStrategy costPlanStrategy , String startDate , String productId ) {
+        this.id = id;
+        this.costPlanStrategy = costPlanStrategy;
+        this.startDate = startDate;
+        this.productId = productId;
+    }
+
+    public void setCostPlanStrategy(CostPlanStrategy costPlanStrategy) {
+        this.costPlanStrategy = costPlanStrategy;
+    }
+
+
+}
+
+class Constants {
+
+    static final String SUBSCRIPTION_ID = "SUBSCRIPTION_ID";
+}
+
+class CostExplorer {
+
+
+    private static CostExplorer costExplorer;
+    int counter = 0;
+    private CostExplorer() {
+        subscriptionIdToActualSubscriptionMap = new HashMap<>();
+
+    }
+
+    private static class Holder {
+        private static CostExplorer instance = new CostExplorer();
+    }
+
+    public static CostExplorer getInstance() {
+        return Holder.instance;
+    }
+
+    Map<String , Subscription> subscriptionIdToActualSubscriptionMap;
+
+    double[] costOfEachMonth = new double[12];
+    double yearlySubscriptionCost = 0.00;
+    int startMonth = 3;
+    int endMonth = 2;
+
+    public void addSubscription(String productId , String planType , String startDate) {
+
+        counter++;
+        Subscription subscription = new Subscription(Constants.SUBSCRIPTION_ID + String.valueOf(counter) ,
+                CostPlanStrategyFactory.getCostPlan(PlanType.valueOf(planType))
+                , startDate , productId);
+
+        subscriptionIdToActualSubscriptionMap.put(subscription.id , subscription);
+        reCalculateCosts();
+
+    }
+
+    public void changePlan(String subscriptionId , String planType ) {
+
+        Subscription subscription = subscriptionIdToActualSubscriptionMap.get(subscriptionId);
+        subscription.setCostPlanStrategy(CostPlanStrategyFactory.getCostPlan(PlanType.valueOf(planType)));
+        reCalculateCosts();
+    }
+
+    public void reCalculateCosts() {
+
+        Arrays.fill(costOfEachMonth , 0.0);
+        for(Map.Entry<String , Subscription> entry : subscriptionIdToActualSubscriptionMap.entrySet()) {
+
+            Subscription subscription = entry.getValue();
+            String startDate = subscription.startDate;
+
+            int startMonth = Integer.parseInt(startDate.split("-")[1]) - 1 ;
+            int date = Integer.parseInt(startDate.split("-")[2]);
+            int remainingDays = 30 - date + 1;
+            int remainingMonths = startMonth - 1;
+            double costForFirstMonth = ( (double)  remainingDays/(double) 30) * subscription.costPlanStrategy.getPrice();
+
+
+            costOfEachMonth[startMonth] += costForFirstMonth;
+
+            for(int i = startMonth + 1 ; i < 12 ; i ++ ) {
+                costOfEachMonth[i] += subscription.costPlanStrategy.getPrice();
+            }
+
+            for(int i = 0 ; i < Math.min(remainingMonths , endMonth ) ; i ++ ) {
+                costOfEachMonth[i] += subscription.costPlanStrategy.getPrice();
+            }
+
+        }
+
+        yearlySubscriptionCost = 0;
+        for(int i = 0 ; i < 12 ; i ++ ) {
+            yearlySubscriptionCost += costOfEachMonth[i];
+        }
+
+    }
+
+    public List<Double> monthlyCostList() {
+
+        List<Double> costList = new ArrayList<>();
+
+        for(int i = 0 ; i < 12 ; i ++ ) {
+            costList.add(costOfEachMonth[i]);
+        }
+
+        return costList;
+    }
+
+    public double annualCost() {
+        return yearlySubscriptionCost;
+    }
+
+
+
+}
