@@ -1,0 +1,241 @@
+/*
+
+Build a 2-dimensional representation of terrain that can represent land and water.
+
+We need a data-structure to efficiently represent this in-memory. We need the following two functions to be efficient:
+isLand(x, y): returns true if a point is a land
+addLand(x, y): sets a point to land
+
+Extend the data-structure to add a method for getIslands() which returns the number of unique connected components of lands
+
+
+Assumptions
+Assume everything is water at the beginning.
+Only 2 types of points can exist (land or water).
+    u
+ l x r
+    d
+
+*/
+
+
+import java.io.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.*;
+
+// Main class should be named 'Solution' and should not be public.
+class Solution {
+    
+    
+    static class DSU {
+        
+        Set<Integer> groupLeaders ;
+        int[] parent;
+        int[] sz;
+        
+        
+        public DSU(int totalElements) {
+            
+            groupLeaders = new HashSet<>();
+            
+            parent = new int[totalElements];
+            sz = new int[totalElements];
+            
+            for(int i = 0 ; i < totalElements ; i ++ ) {
+                parent[i] = i;
+                sz[i] = 1;
+            }
+            
+        }
+        
+        
+        
+        public int root(int i) {
+            
+            while(i != parent[i]) {
+                parent[i] = parent[parent[i]];
+                i = parent[i];
+            }
+            
+            return i;
+        }
+        
+        public void addLand(int x) {
+            
+            int root_x = root(x);
+            groupLeaders.add(x);
+        }
+        
+        public void uni(int a , int b ) {
+            
+            int root_a = root(a);
+            int root_b = root(b);
+            
+            groupLeaders.add(root_a);
+            groupLeaders.add(root_b);
+            
+            if(root_a == root_b) {
+                return ;
+            }
+            
+            if(sz[root_a] >= sz[root_b]) {
+                
+                groupLeaders.remove(root_b);
+                sz[root_a] += sz[root_b];
+                parent[root_b] = root_a; 
+            } else {
+                
+                groupLeaders.remove(root_a);
+                sz[root_b] += sz[root_a];
+                parent[root_a] = root_b;
+            } 
+            
+        }
+        
+        
+        
+        
+    }
+    public static void main(String[] args) {
+        System.out.println("Hello, World");
+        
+        int n = 4;
+        int m = 6;
+        
+        int[][] grid = new int[n][m];
+        
+        DSU dsu = new DSU(n*m);
+        addLand(3 , 5 , grid , dsu );
+        
+        System.out.println(getIslands(dsu));
+        
+        addLand(2, 5, grid, dsu);
+        System.out.println(getIslands(dsu));
+        
+        
+        addLand(1, 3, grid, dsu);
+        System.out.println(getIslands(dsu));
+        
+        addLand(1, 5, grid, dsu);
+        System.out.println(getIslands(dsu));
+        
+        addLand(0, 3, grid, dsu);
+        System.out.println(getIslands(dsu));
+        
+        
+        
+        
+        
+    }
+    
+    
+    /*
+    
+        2 , 3
+        
+        n = 4
+        m = 6 
+    
+        0 1 2 3 4 5      m - 1 
+        6 7 8 9 10 11    2*m - 1
+        12 13 14 15 16 17  3*m - 1
+        17 18 19 20 21   
+        
+        x*m  + y  
+        
+        n * m 
+        
+        x , y 
+        
+        x * m - 1 + y;
+    */
+    public static boolean addLand(int x,int  y , int[][] grid , DSU dsu) {
+        
+        if(!isValidCell(x , y , grid)) {
+            return false;
+        }
+        
+        if(isLand(x , y , grid )) {
+            return true;
+        }
+        
+        grid[x][y] = 1;
+        
+        int id = getId(x , y , grid);
+        
+        dsu.addLand(id);
+        
+        int lx = x ;
+        int ly = y - 1;
+        
+        if(isValidCell(lx ,ly , grid) && grid[lx][ly] == 1 ) {
+            
+            int leftId = getId(lx , ly , grid);
+            dsu.uni(id, leftId);
+            
+        }
+        
+        int ux = x - 1;
+        int uy = y;
+        
+        if(isValidCell(ux ,uy , grid) && grid[ux][uy] == 1  ) {
+            
+            int upId = getId(ux , uy , grid);
+            dsu.uni(id, upId);
+            
+        }
+        
+        int rx = x;
+        int ry = y + 1;
+        
+        if(isValidCell(rx ,ry , grid) && grid[rx][ry] == 1 ) {
+            
+            int rightId = getId(rx , ry , grid);
+            dsu.uni(id, rightId);
+            
+        }
+        
+        int dx = x + 1;
+        int dy = y;
+        
+        if(isValidCell(dx ,dy , grid) && grid[dx][dy] == 1 ) {
+            
+            int downId = getId(dx , dy , grid);
+            dsu.uni(id, downId);
+            
+        }
+
+        
+        return true;
+    }
+    
+    static int getId(int x , int y , int[][] grid) {
+        
+        int n = grid.length;
+        int m = grid[0].length;
+        
+        
+        
+        return x*m + y;
+    }
+    
+    public static boolean isLand(int x , int y , int[][] grid ) {
+        
+        return isValidCell(x, y, grid) ? grid[x][y] == 1 : false;
+    }
+    
+    
+    public static int getIslands(DSU dsu) {
+        
+        return dsu.groupLeaders.size();
+    }
+    
+    public static boolean isValidCell(int x , int y , int[][] grid) {
+        
+        int n = grid.length;
+        int m = grid[0].length;
+        
+        return x >= 0 && x < n && y >= 0 && y < m ;
+    }
+}
