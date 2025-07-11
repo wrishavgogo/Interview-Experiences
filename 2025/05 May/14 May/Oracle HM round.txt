@@ -1,0 +1,20 @@
+Oracle Health interview
+
+Dude loads of questions  
+
+HM round taken by Oracle Health Director 
+
+He asked about a challenging task that you did and what problems you faced in that -> need to find a very solid story for this 
+Impact , cannot talk about bundle story , 
+Most impactful work talk about preferred Day feature ,
+
+
+
+Oracle Health Migrating from Old Legacy to new Oracle EHR -> want to explore this 
+
+
+
+I did not have full proof answer to the question : 
+
+Did your code ever cause any incident and how did you handle it ? was it a quick turn around 
+I told them about the sfs node level reservation scenario where sfs went from dfs 
