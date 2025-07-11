@@ -1,0 +1,206 @@
+import java.io.*;
+import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.concurrent.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+/*
+You are writing a feature to determine if an ad has had X impressions without a click over a Y day rolling window (i.e. if a user has not interacted with an ad but has seen it multiple times).
+
+To do this, the following functions need to be implemented:
+
+Consume "ad event". These ad events consist of a unique ad uuid, the timestamp of the event, and the event type (impression or click).
+enum AdEventType {
+    IMPRESSION,CLICK
+} 
+
+AdEvent(UUID adUUID, LocalDateTime timestamp, AdEventType type)
+
+public void consumeAdEvents(final List<AdEvent> events)
+
+Get ad event history aggregated and sorted by day for a certain ad uuid.
+// 2019-03-26 : impressions - 3, clicks - 0
+// 2019-03-27 : impressions - 3, clicks - 1
+// 2019-03-28 : impressions - 3, clicks - 3
+AdEventBucket(LocalDate date, int impressions, int clicks)
+
+public List<AdEventBucket> getDailyAdEventHistory(final UUID adUUID)
+
+Determine if a particular ad has had X impressions without a click over a Y day rolling window (i.e. if a user has not interacted with an ad but has seen it multiple times).
+
+static final int ROLLING_WINDOW_LENGTH_DAYS = 3;
+static final int IMPRESSION_LIMIT = 5;
+
+public Boolean isAdCappedAtDate(final UUID adUUID, final LocalDate date)
+ 
+*/
+
+// Main class should be named 'Solution' and should not be public.
+class Solution {
+    public static void main(String[] args) {
+        System.out.println("Hello, World");
+    }
+    
+    
+    static enum AdEventType {
+        IMPRESSION,CLICK
+    }
+    
+    static interface EventHandler {
+        
+        public void adEvent(UUID adUUID, LocalDateTime timestamp, AdEventType type);
+        
+        public List<AdEventBucket> getDailyAdEventHistory(final UUID adUUID);
+        
+        
+        public Boolean isAdCappedAtDate(final UUID adUUID, final LocalDate date)
+    }
+    
+    class AdEventHandler implements EventHandler {
+        
+        Map<UUID , Map<LocalDateTime , Map<AdEventType, Integer> >> dateToEventTypeCountMap = new ConcurrentHashMap<>();
+        
+        static final int ROLLING_WINDOW_LENGTH_DAYS = 3;
+        static final int IMPRESSION_LIMIT = 5;
+        
+        @Override
+        public void adEvent(UUID adUUID, LocalDateTime timestamp, AdEventType type) {
+            
+            
+            Event event = EventFactory.getEvent("AdEvent")
+            
+        }
+        
+        @Override
+        public List<AdEventBucket> getDailyAdEventHistory(final UUID adUUID) {
+            
+            List<AdEventBucket> adEventBucketList = new ArrayList<>();
+            
+            Map<LocalDateTime , Map<AdEventType, Integer>> dateToEventTypeCountMap = dateToEventTypeCountMap.get(adUUID);
+            
+            if(dateToEventTypeCountMap != null ) {
+                
+                for(Map.Entry<LocalDateTime , Map<AdEventType, Integer>> entry : dateToEventTypeCountMap.entrySet()) {
+                    
+                    // LocalDateTime.now().toLocalDate();
+                        
+                     Map<AdEventType, Integer> eventTypeToInteger = entry.getValue();
+                     
+                     for(Map<AdEventType, Integer> entry1 : eventTypeToInteger.entrySet()) {
+                        adEventBucketList.add(new AdEventBucket(LocalDateTime , entry1.getKey() , entry1.getValue()));
+                     }
+                }
+                
+            }
+            
+            
+            return adEventBucketList;
+            
+            
+        }
+        
+        @Override
+        public Boolean isAdCappedAtDate(final UUID adUUID, final LocalDate date) {
+            
+             Map<LocalDateTime , Map<AdEventType, Integer>> dateToEventTypeMap = dateToEventTypeCountMap.get(adUUID);
+             
+             if(dateToEventTypeMap == null ) {
+                return false;
+             }
+             
+             
+             
+             boolean ans = true;
+             
+             
+             /*
+               25 - 3 = 22 
+                23 -> 3 , 
+                24 -> 1 
+                25 -> 6 
+             */
+             
+             for(Map.Entry<LocalDateTime , Map<AdEventType, Integer>> entry :dateToEventTypeMap.entrySet()) {
+                
+                
+             }
+             
+             
+             while(date ) {
+                
+                date.plusDays(1);
+             }
+             
+            
+        }
+        
+        
+    }
+    
+    
+    static class AdEventBucket {
+        
+        LocalDate date;
+        int impressions;
+        int clicks;
+        
+        public AdEventBucket(LocalDate date, int impressions , int clicks ) {
+            this.date = date;
+            this.impressions = impressions;
+            this.clicks = clicks;
+        }
+    }
+    
+    
+    static abstract class Event {
+        UUID eventUuid;
+        LocalDateTime timeStamp;
+        
+        public Event(UUID eventUuid ,LocalDateTime timeStamp ) {
+            this.eventUuid = eventUuid;
+            this.timeStamp = timeStamp;
+        }
+        
+    }
+    
+    static class EventFactory {
+        
+        Event event;
+        
+        public static Event getEvent(String eventType , UUID eventUuid , LocalDateTime timeStamp ) {
+            
+            switch(eventType) {
+                
+                case "AdEvent" : {
+                    return new AdEvent(eventUuid ,timeStamp );
+                
+                }  
+                default : {
+                    return null;
+                }
+            }
+        }
+    }
+    
+    static class AdEvent extends Event {
+        
+        AdEventType adEventType;
+        
+        public AdEvent(UUID eventUuid ,LocalDateTime timeStamp ) {
+            
+            super(eventUuid , timeStamp);
+        }
+        
+        public void setAdEventType(AdEventType adEventType) {
+            this.adEventType = adEventType;
+        }
+        
+        
+        
+    }
+    
+    
+}
